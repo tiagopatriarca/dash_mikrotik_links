@@ -147,6 +147,11 @@ class RouterCreate(BaseModel):
 
 @app.post("/api/routers")
 async def create_router(router: RouterCreate, db: Session = Depends(database.get_db)):
+    # Verifica se já existe para não dar erro de duplicidade
+    existing = db.query(models.Router).filter(models.Router.router_name == router.router_name).first()
+    if existing:
+        return {"message": "Router already exists"}
+        
     db_router = models.Router(
         client_name=router.client_name,
         router_name=router.router_name,
@@ -156,3 +161,19 @@ async def create_router(router: RouterCreate, db: Session = Depends(database.get
     db.commit()
     db.refresh(db_router)
     return db_router
+
+@app.delete("/api/routers/{router_name}")
+async def delete_router(router_name: str, db: Session = Depends(database.get_db)):
+    # Busca o roteador
+    router = db.query(models.Router).filter(models.Router.router_name == router_name).first()
+    if not router:
+        raise HTTPException(status_code=404, detail="Router not found")
+        
+    # Deleta os links associados a ele
+    db.query(models.LinkStatus).filter(models.LinkStatus.router_name == router_name).delete()
+    
+    # Deleta o roteador
+    db.delete(router)
+    db.commit()
+    
+    return {"message": f"Router {router_name} and its links removed successfully"}

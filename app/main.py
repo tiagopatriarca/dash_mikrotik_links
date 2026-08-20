@@ -91,6 +91,9 @@ async def receive_webhook(
     if token != SECRET_TOKEN:
         raise HTTPException(status_code=403, detail="Forbidden: Invalid Token")
         
+    # Força o status para maiúsculo para evitar erros de digitação (up -> UP)
+    safe_status = payload.status.upper()
+        
     # Verificar se o roteador está cadastrado
     router = db.query(models.Router).filter(models.Router.router_name == payload.router_name).first()
     if not router:
@@ -103,12 +106,12 @@ async def receive_webhook(
     ).first()
 
     if link_status:
-        link_status.status = payload.status
+        link_status.status = safe_status
     else:
         link_status = models.LinkStatus(
             router_name=payload.router_name,
             link_name=payload.link_name,
-            status=payload.status
+            status=safe_status
         )
         db.add(link_status)
         
@@ -118,7 +121,7 @@ async def receive_webhook(
     update_data = {
         "router_name": payload.router_name,
         "link_name": payload.link_name,
-        "status": payload.status,
+        "status": safe_status,
         "client_name": router.client_name
     }
     await manager.broadcast(json.dumps(update_data))

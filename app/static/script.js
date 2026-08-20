@@ -31,28 +31,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateDashboard(data) {
         const { router_name, link_name, status, client_name } = data;
         
-        // Identificadores únicos baseados no roteador e link
-        const cardId = `card-${router_name}-${link_name}`;
+        const cardId = `card-${router_name}`;
+        const bodyId = `body-${router_name}`;
+        const linkContainerId = `link-container-${router_name}-${link_name}`;
         const statusId = `status-${router_name}-${link_name}`;
         
         let card = document.getElementById(cardId);
+
+        // Se o card do router não existe, cria
+        if (!card) {
+            createRouterCard(router_name, client_name, cardId, bodyId);
+            card = document.getElementById(cardId);
+        }
+
         let statusDiv = document.getElementById(statusId);
 
-        // Se o card não existe, cria um novo dinamicamente
-        if (!card) {
-            createCard(router_name, link_name, status, client_name, cardId, statusId);
-            card = document.getElementById(cardId);
+        // Se a bolinha do link não existe, cria dentro do body do card
+        if (!statusDiv) {
+            createLinkItem(bodyId, router_name, link_name, status, linkContainerId, statusId);
             statusDiv = document.getElementById(statusId);
         }
 
-        // Verifica qual era o status antigo para saber se houve mudança real
         const isCurrentlyUp = statusDiv.classList.contains('up');
         const isNewUp = (status === 'UP');
 
         if (isCurrentlyUp !== isNewUp) {
-            // Houve mudança real de estado!
-            
-            // Atualiza as classes da bolinha
+            // Atualiza as classes
             if (isNewUp) {
                 statusDiv.classList.remove('down');
                 statusDiv.classList.add('up');
@@ -61,21 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDiv.classList.add('down');
             }
 
-            // Dispara a animação de vibração no card
-            card.classList.remove('shake'); // reseta caso já estivesse
-            void card.offsetWidth; // trigger reflow para a animação reiniciar
+            // Animação de vibração no card inteiro do router
+            card.classList.remove('shake');
+            void card.offsetWidth; 
             card.classList.add('shake');
             
-            // Remove a classe shake depois que a animação terminar (0.82s)
             setTimeout(() => {
                 card.classList.remove('shake');
             }, 1000);
         }
     }
 
-    function createCard(router_name, link_name, status, client_name, cardId, statusId) {
+    function createRouterCard(router_name, client_name, cardId, bodyId) {
         const grid = document.getElementById('dashboard-grid');
-        const statusClass = status === 'UP' ? 'up' : 'down';
         
         const cardHTML = `
             <div class="card shake" id="${cardId}">
@@ -83,24 +85,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="client-name">${client_name}</span>
                     <span class="router-name">${router_name}</span>
                 </div>
-                
-                <div class="card-body">
-                    <div class="status-indicator ${statusClass}" id="${statusId}"></div>
-                </div>
-                
-                <div class="card-footer">
-                    <span class="link-name">${link_name}</span>
-                </div>
+                <div class="card-body" id="${bodyId}"></div>
             </div>
         `;
         
         grid.insertAdjacentHTML('beforeend', cardHTML);
         
-        // Remove the initial shake after 1s
         setTimeout(() => {
             const newCard = document.getElementById(cardId);
             if(newCard) newCard.classList.remove('shake');
         }, 1000);
+    }
+
+    function createLinkItem(bodyId, router_name, link_name, status, linkContainerId, statusId) {
+        const body = document.getElementById(bodyId);
+        const statusClass = status === 'UP' ? 'up' : 'down';
+        
+        const linkHTML = `
+            <div class="link-item" id="${linkContainerId}">
+                <div class="status-indicator ${statusClass}" id="${statusId}"></div>
+                <span class="link-name-small">${link_name}</span>
+            </div>
+        `;
+        body.insertAdjacentHTML('beforeend', linkHTML);
     }
 
     // Inicia a conexão

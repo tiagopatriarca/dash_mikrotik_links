@@ -60,18 +60,22 @@ async def get_dashboard(request: Request, db: Session = Depends(database.get_db)
     # Criar um dict para acesso rápido aos nomes dos clientes
     client_map = {r.router_name: r.client_name for r in routers}
     
-    # Organizar os links únicos
-    dashboard_data = {}
+    # Organizar os links por roteador
+    routers_data = {}
     for link in links:
-        key = f"{link.router_name}_{link.link_name}"
-        dashboard_data[key] = {
-            "router_name": link.router_name,
+        r_name = link.router_name
+        if r_name not in routers_data:
+            routers_data[r_name] = {
+                "router_name": r_name,
+                "client_name": client_map.get(r_name, "Desconhecido"),
+                "links": []
+            }
+        routers_data[r_name]["links"].append({
             "link_name": link.link_name,
-            "status": link.status,
-            "client_name": client_map.get(link.router_name, "Desconhecido")
-        }
+            "status": link.status
+        })
         
-    return templates.TemplateResponse("index.html", {"request": request, "links": dashboard_data.values()})
+    return templates.TemplateResponse("index.html", {"request": request, "routers": routers_data.values()})
 
 @app.post("/api/webhook")
 async def receive_webhook(

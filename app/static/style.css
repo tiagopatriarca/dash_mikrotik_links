@@ -81,22 +81,31 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 20px; /* Espaço entre bolinhas */
+    flex-wrap: wrap; /* Permite pular linha se tiver muitos links */
+    width: 100%;
+    padding-top: 15px;
 }
 
-.card-footer {
-    width: 100%;
+.link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    font-size: 0.85rem;
-    color: #aaa;
-    background: #111;
-    padding: 5px;
-    border-radius: 6px;
+}
+
+.link-name-small {
+    font-size: 0.8rem;
+    color: #ccc;
+    margin-top: 8px;
+    max-width: 80px;
+    word-wrap: break-word;
 }
 
 /* Bolinha de Status */
 .status-indicator {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     transition: background-color 0.3s ease;
 }

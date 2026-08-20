@@ -12,21 +12,22 @@
     </header>
     
     <main class="dashboard-grid" id="dashboard-grid">
-        {% for link in links %}
-        <div class="card" id="card-{{ link.router_name }}-{{ link.link_name }}">
+        {% for router in routers %}
+        <div class="card" id="card-{{ router.router_name }}">
             <div class="card-header">
-                <span class="client-name">{{ link.client_name }}</span>
-                <span class="router-name">{{ link.router_name }}</span>
+                <span class="client-name">{{ router.client_name }}</span>
+                <span class="router-name">{{ router.router_name }}</span>
             </div>
             
-            <div class="card-body">
-                <div class="status-indicator {% if link.status == 'UP' %}up{% else %}down{% endif %}" 
-                     id="status-{{ link.router_name }}-{{ link.link_name }}">
+            <div class="card-body" id="body-{{ router.router_name }}">
+                {% for link in router.links %}
+                <div class="link-item" id="link-container-{{ router.router_name }}-{{ link.link_name }}">
+                    <div class="status-indicator {% if link.status == 'UP' %}up{% else %}down{% endif %}" 
+                         id="status-{{ router.router_name }}-{{ link.link_name }}">
+                    </div>
+                    <span class="link-name-small">{{ link.link_name }}</span>
                 </div>
-            </div>
-            
-            <div class="card-footer">
-                <span class="link-name">{{ link.link_name }}</span>
+                {% endfor %}
             </div>
         </div>
         {% endfor %}

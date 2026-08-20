@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build: .
+    container_name: mikrotik_dashboard
+    ports:
+      - "8033:8000"
+    volumes:
+      - dashboard_data:/app/data
+    environment:
+      - SECRET_TOKEN=SEU_TOKEN_SECRETO_123
+    restart: unless-stopped
+
+volumes:
+  dashboard_data:

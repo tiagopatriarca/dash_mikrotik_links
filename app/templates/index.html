@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikroTik NOC Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Painel de Monitoramento de Links (NOC)</h1>
+    </header>
+    
+    <main class="dashboard-grid" id="dashboard-grid">
+        {% for link in links %}
+        <div class="card" id="card-{{ link.router_name }}-{{ link.link_name }}">
+            <div class="card-header">
+                <span class="client-name">{{ link.client_name }}</span>
+                <span class="router-name">{{ link.router_name }}</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="status-indicator {% if link.status == 'UP' %}up{% else %}down{% endif %}" 
+                     id="status-{{ link.router_name }}-{{ link.link_name }}">
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <span class="link-name">{{ link.link_name }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

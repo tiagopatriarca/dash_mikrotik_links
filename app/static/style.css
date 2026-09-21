@@ -82,17 +82,13 @@ h1 {
 
 .dashboard-grid {
     display: grid;
-    /* Ajusta para ter no máximo 6 colunas, e ser responsivo */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Usa auto-fill para que 1 ou poucos cards não se estiquem sozinhos pela tela */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 210px));
     gap: 20px;
     padding: 20px;
-}
-
-@media (min-width: 1400px) {
-    .dashboard-grid {
-        /* Força máximo de 6 por linha em telas grandes */
-        grid-template-columns: repeat(6, 1fr);
-    }
+    max-width: 1460px; /* Garante no máximo 6 colunas por linha */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .card {
@@ -107,6 +103,9 @@ h1 {
     border: 1px solid #333;
     transition: transform 0.2s;
     aspect-ratio: 1 / 1; /* Mantém como um quadrado */
+    width: 100%;
+    max-width: 220px;
+    box-sizing: border-box;
 }
 
 .card-header {

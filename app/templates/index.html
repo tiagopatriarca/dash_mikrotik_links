@@ -11,6 +11,17 @@
         <h1>Painel de Monitoramento de Links (NOC)</h1>
     </header>
     
+    <section class="summary-container">
+        <div class="summary-card up">
+            <span class="summary-label">Links Online</span>
+            <span class="summary-value" id="count-up">{{ total_up }}</span>
+        </div>
+        <div class="summary-card down">
+            <span class="summary-label">Links Offline</span>
+            <span class="summary-value" id="count-down">{{ total_down }}</span>
+        </div>
+    </section>
+
     <main class="dashboard-grid" id="dashboard-grid">
         {% for router in routers %}
         <div class="card" id="card-{{ router.router_name }}">

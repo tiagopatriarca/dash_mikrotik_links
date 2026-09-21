@@ -75,7 +75,16 @@ async def get_dashboard(request: Request, db: Session = Depends(database.get_db)
             "status": link.status
         })
         
-    return templates.TemplateResponse("index.html", {"request": request, "routers": routers_data.values()})
+    # Contagem de links online e offline
+    total_up = sum(1 for link in links if link.status == 'UP')
+    total_down = sum(1 for link in links if link.status != 'UP')
+        
+    return templates.TemplateResponse("index.html", {
+        "request": request, 
+        "routers": routers_data.values(),
+        "total_up": total_up,
+        "total_down": total_down
+    })
 
 @app.post("/api/webhook")
 async def receive_webhook(

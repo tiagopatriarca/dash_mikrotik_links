@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 card.classList.remove('shake');
             }, 1000);
+
+            // Atualiza os contadores no topo
+            updateSummaryCounters();
         }
     }
 
@@ -108,8 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         body.insertAdjacentHTML('beforeend', linkHTML);
+        updateSummaryCounters();
+    }
+
+    function updateSummaryCounters() {
+        const upCount = document.querySelectorAll('#dashboard-grid .status-indicator.up').length;
+        const downCount = document.querySelectorAll('#dashboard-grid .status-indicator.down').length;
+        const elUp = document.getElementById('count-up');
+        const elDown = document.getElementById('count-down');
+        if (elUp) elUp.textContent = upCount;
+        if (elDown) elDown.textContent = downCount;
     }
 
     // Inicia a conexão
     connect();
+    updateSummaryCounters();
 });
